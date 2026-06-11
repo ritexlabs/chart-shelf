@@ -82,6 +82,30 @@ jobs:
         run: |
           helm repo index dist --url https://ritexlabs.github.io/chart-shelf/
 
+      - name: Add GitHub Pages landing page
+        shell: bash
+        run: |
+          cat > dist/index.html <<'EOF'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <meta http-equiv="refresh" content="0; url=./index.yaml" />
+              <title>chart-shelf</title>
+            </head>
+            <body>
+              <p>
+                Helm repository for chart-shelf is available at
+                <a href="./index.yaml">index.yaml</a>.
+              </p>
+            </body>
+          </html>
+          EOF
+
+      - name: Add nojekyll marker
+        run: touch dist/.nojekyll
+
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
