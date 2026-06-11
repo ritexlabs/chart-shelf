@@ -25,17 +25,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Helm
-        uses: azure/setup-helm@v4
-        with:
-          version: v3.16.3
-
-      - name: Package changed charts
+      - name: Detect changed charts
+        id: changes
         shell: bash
         run: |
           set -euo pipefail
-
-          mkdir -p dist
 
           if [[ "${GITHUB_EVENT_NAME}" == "push" && "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]]; then
             mapfile -t chart_dirs < <(
@@ -50,9 +44,27 @@ jobs:
           fi
 
           if [[ ${#chart_dirs[@]} -eq 0 ]]; then
-            echo "No chart changes detected."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+
+          printf '%s\n' "${chart_dirs[@]}" > chart_dirs.txt
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.3
+
+      - name: Package changed charts
+        if: steps.changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p dist
+
+          mapfile -t chart_dirs < chart_dirs.txt
 
           for chart_dir in "${chart_dirs[@]}"; do
             chart_name=$(awk -F': *' '/^name:/ {print $2; exit}' "${chart_dir}/Chart.yaml")
@@ -79,10 +91,12 @@ jobs:
           done
 
       - name: Generate repository index
+        if: steps.changes.outputs.changed == 'true'
         run: |
           helm repo index dist --url https://ritexlabs.github.io/chart-shelf/
 
       - name: Add GitHub Pages landing page
+        if: steps.changes.outputs.changed == 'true'
         shell: bash
         run: |
           cat > dist/index.html <<'EOF'
@@ -104,9 +118,11 @@ jobs:
           EOF
 
       - name: Add nojekyll marker
+        if: steps.changes.outputs.changed == 'true'
         run: touch dist/.nojekyll
 
       - name: Publish to GitHub Pages
+        if: steps.changes.outputs.changed == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
