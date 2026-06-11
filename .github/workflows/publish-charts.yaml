@@ -95,6 +95,27 @@ jobs:
         run: |
           helm repo index dist --url https://ritexlabs.github.io/chart-shelf/
 
+      - name: Validate repository index
+        if: steps.changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ruby -e '
+            require "yaml"
+
+            index = YAML.load_file("dist/index.yaml")
+
+            unless index.is_a?(Hash) && index["apiVersion"] == "v1" && index.key?("entries") && index.key?("generated")
+              abort("dist/index.yaml has an unexpected top-level structure")
+            end
+
+            entries = index["entries"]
+            unless entries.is_a?(Hash) && entries.all? { |_name, versions| versions.is_a?(Array) }
+              abort("dist/index.yaml entries must map chart names to version arrays")
+            end
+          '
+
       - name: Add GitHub Pages landing page
         if: steps.changes.outputs.changed == 'true'
         shell: bash
