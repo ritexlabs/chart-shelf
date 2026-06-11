@@ -1,0 +1,33 @@
+{{- if .Values.vote.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vote-ingress
+  annotations:
+{{- range $key, $value := .Values.vote.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+{{- end }}
+spec:
+  {{- if .Values.vote.ingress.className }}
+  ingressClassName: {{ .Values.vote.ingress.className }}
+  {{- end }}
+  rules:
+    {{- range .Values.vote.ingress.hosts }}
+    - host: {{ .host }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: vote
+                port:
+                  number: {{ $.Values.vote.containerPort }}
+         {{- end }}
+    {{- end }}
+  {{- if .Values.vote.ingress.tls }}
+  tls:
+    {{- toYaml .Values.vote.ingress.tls | nindent 4 }}
+  {{- end }}
+{{- end }}

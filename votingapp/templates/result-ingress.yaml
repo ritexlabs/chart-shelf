@@ -1,0 +1,33 @@
+{{- if .Values.result.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: result-ingress
+  annotations:
+{{- range $key, $value := .Values.result.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+{{- end }}
+spec:
+  {{- if .Values.result.ingress.className }}
+  ingressClassName: {{ .Values.result.ingress.className }}
+  {{- end }}
+  rules:
+    {{- range .Values.result.ingress.hosts }}
+    - host: {{ .host }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: result
+                port:
+                  number: {{ $.Values.result.containerPort }}
+          {{- end }}
+    {{- end }}
+  {{- if .Values.result.ingress.tls }}
+  tls:
+    {{- toYaml .Values.result.ingress.tls | nindent 4 }}
+  {{- end }}
+{{- end }}
