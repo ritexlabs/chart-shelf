@@ -30,24 +30,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
-          if [[ "${GITHUB_EVENT_NAME}" == "push" && "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]]; then
-            mapfile -t chart_dirs < <(
-              git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" \
-                | awk -F/ '/^(colorapp|votingapp)\// {print $1}' \
-                | sort -u
-            )
-          else
-            mapfile -t chart_dirs < <(
-              find . -mindepth 1 -maxdepth 1 -type d \( -name colorapp -o -name votingapp \) -printf '%f\n' | sort
-            )
-          fi
-
-          if [[ ${#chart_dirs[@]} -eq 0 ]]; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
+          chart_dirs=(colorapp votingapp)
           printf '%s\n' "${chart_dirs[@]}" > chart_dirs.txt
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
