@@ -3,9 +3,9 @@ entries:
   colorapp:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-06-13T05:53:21.234725285Z"
+    created: "2026-06-13T07:07:20.083794963Z"
     description: Sample color application deployment
-    digest: 412668fbdc8ca34091f8cd6481f092750ad5657c6dae9ea047154ad83906f9a0
+    digest: 4b5c828a88707d91f5dca9a016907ab488b23d2dfacb72ceecb8fdc0b9609919
     name: colorapp
     type: application
     urls:
@@ -14,11 +14,11 @@ entries:
   votingapp:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-06-13T05:53:21.235210954Z"
+    created: "2026-06-13T07:07:20.084240188Z"
     description: Sample voting app deployment
-    digest: 2635202ee258115d4ee85051fd08dc2ceca4854b9bf6967be0e4a05858757f30
+    digest: 8ff523e3859f4de79cd29080e23b1f9f8ed586f89f358098357425abd975881b
     name: votingapp
     urls:
     - https://ritexlabs.github.io/chart-shelf/votingapp-1.0.0.tgz
     version: 1.0.0
-generated: "2026-06-13T05:53:21.234216026Z"
+generated: "2026-06-13T07:07:20.083261713Z"
