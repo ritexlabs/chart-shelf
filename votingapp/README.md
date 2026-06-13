@@ -2,6 +2,8 @@
 
 This chart deploys the sample voting stack with vote, result, worker, redis, and db components.
 
+The container images used by this chart come from the upstream Example Voting App project: https://github.com/dockersamples/example-voting-app.
+
 ## Publish Flow
 This repository already builds and publishes both top-level charts automatically through `.github/workflows/publish-charts.yaml` whenever `colorapp/` or `votingapp/` changes.
 
