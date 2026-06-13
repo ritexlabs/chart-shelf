@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "votingapp.fullname" . }}:{{ .Values.vote.port }}']
+      args: ['vote:{{ .Values.vote.service.port }}']
   restartPolicy: Never

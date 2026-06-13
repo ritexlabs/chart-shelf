@@ -7,7 +7,7 @@ vote:
     type: NodePort
     port: 80
   ingress:
-    enabled: False
+    enabled: false
     className: alb
     annotations: 
       alb.ingress.kubernetes.io/scheme: internet-facing
@@ -31,9 +31,8 @@ result:
   service:
     type: NodePort
     port: 80
-    nodePort: 31002
   ingress:
-    enabled: False
+    enabled: false
     className: alb
     annotations: 
       alb.ingress.kubernetes.io/scheme: internet-facing
@@ -60,13 +59,14 @@ redis:
   service:
     type: NodePort
     port: 6379
-  
+
 db:
   image: postgres:9.4
   pullPolicy: IfNotPresent
   containerPort: 5432
   postgresUser: postgres
-  postgresPassword: postgres
+  postgresPassword: ""
+  postgresHostAuthMethod: trust
   service:
     type: NodePort
     port: 5432

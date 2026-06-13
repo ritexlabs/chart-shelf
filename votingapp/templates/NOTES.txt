@@ -7,14 +7,14 @@
   {{- end }}
 {{- end }}
 {{- else if eq .Values.vote.service.type "NodePort" }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "votingapp.fullname" . }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services vote)
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 {{- else if eq .Values.vote.service.type "LoadBalancer" }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         You can watch its status by running:
-        kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "votingapp.fullname" . }}
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "votingapp.fullname" . }} --template "{{ (index .status.loadBalancer.ingress 0).ip }}")
+        kubectl get --namespace {{ .Release.Namespace }} svc -w vote
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} vote --template "{{ (index .status.loadBalancer.ingress 0).ip }}")
   echo http://$SERVICE_IP:{{ .Values.vote.service.port }}
 {{- else if eq .Values.vote.service.type "ClusterIP" }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "votingapp.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
@@ -31,14 +31,14 @@
   {{- end }}
 {{- end }}
 {{- else if eq .Values.result.service.type "NodePort" }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "votingapp.fullname" . }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services result)
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 {{- else if eq .Values.result.service.type "LoadBalancer" }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         You can watch its status by running:
-        kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "votingapp.fullname" . }}
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "votingapp.fullname" . }} --template "{{ (index .status.loadBalancer.ingress 0).ip }}")
+        kubectl get --namespace {{ .Release.Namespace }} svc -w result
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} result --template "{{ (index .status.loadBalancer.ingress 0).ip }}")
   echo http://$SERVICE_IP:{{ .Values.result.service.port }}
 {{- else if eq .Values.result.service.type "ClusterIP" }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "votingapp.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
